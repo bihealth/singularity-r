@@ -1,9 +1,9 @@
 BootStrap: docker
-From: ubuntu:16.04
+From: centos:7
 
 %labels
-  Maintainer Jeremy Nicklas
-  R_Version 3.6.2
+  Maintainer Manuel Holtgrewe
+  R_Version 4.0.5
 
 %apprun R
   exec R "${@}"
@@ -16,43 +16,31 @@ From: ubuntu:16.04
 
 %post
   # Software versions
-  export R_VERSION=3.6.2
+  export R_VERSION=4.0.5
 
   # Get dependencies
-  apt-get update
-  apt-get install -y --no-install-recommends \
-    locales
+  yum clean all
+  yum upgrade -y
+  yum install -y epel-release
 
   # Configure default locale
-  echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-  locale-gen en_US.utf8
-  /usr/sbin/update-locale LANG=en_US.UTF-8
+  echo 'LANG="en_US.UTF-8"' >/etc/locale.conf
   export LC_ALL=en_US.UTF-8
   export LANG=en_US.UTF-8
 
   # Install R
-  echo "deb http://cran.r-project.org/bin/linux/ubuntu xenial-cran35/" > /etc/apt/sources.list.d/r.list
-  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-  apt-get update
-  apt-get install -y --no-install-recommends \
-    r-base=${R_VERSION}* \
-    r-base-core=${R_VERSION}* \
-    r-base-dev=${R_VERSION}* \
-    r-recommended=${R_VERSION}* \
-    r-base-html=${R_VERSION}* \
-    r-doc-html=${R_VERSION}* \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libxml2-dev \
-    libcairo2-dev \
-    libxt-dev
+  curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm
+  yum install -y R-${R_VERSION}-1-1.x86_64.rpm
+  rm -f R-${R_VERSION}-1-1.x86_64.rpm
+  ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+  ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
   # Add a default CRAN mirror
-  echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /usr/lib/R/etc/Rprofile.site
+  echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /opt/R/${R_VERSION}/lib/R/etc/Rprofile.site
 
   # Add a directory for host R libraries
   mkdir -p /library
-  echo "R_LIBS_SITE=/library:\${R_LIBS_SITE}" >> /usr/lib/R/etc/Renviron.site
+  echo "R_LIBS_SITE=/library:\${R_LIBS_SITE}" >> /opt/R/${R_VERSION}/lib/R/etc/Renviron.site
 
   # Clean up
-  rm -rf /var/lib/apt/lists/*
+  yum clean all

@@ -1,12 +1,8 @@
 # Singularity R
 
-[![Build Status](https://travis-ci.org/nickjer/singularity-r.svg?branch=master)](https://travis-ci.org/nickjer/singularity-r)
-[![Singularity Hub](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/462)
-[![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+Singularity image for [R] based on CentOS 7.
 
-Singularity image for [R].
-
-This is still a work in progress.
+Based on nickjeer/singularity-r.
 
 ## Build
 
@@ -14,15 +10,6 @@ You can build a local Singularity image named `singularity-r.simg` with:
 
 ```sh
 sudo singularity build singularity-r.simg Singularity
-```
-
-## Deploy
-
-Instead of building it yourself you can download the pre-built image from
-[Singularity Hub](https://www.singularity-hub.org) with:
-
-```sh
-singularity pull --name singularity-r.simg shub://nickjer/singularity-r
 ```
 
 ## Run
@@ -70,11 +57,6 @@ Example:
 $ singularity run --app Rscript singularity-r.simg --version
 R scripting front-end version 3.4.3 (2017-11-30)
 ```
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at
-https://github.com/nickjer/singularity-r.
 
 ## License
 
